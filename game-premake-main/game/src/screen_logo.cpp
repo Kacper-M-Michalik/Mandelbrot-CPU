@@ -25,6 +25,7 @@
 
 #include "raylib.h"
 #include "screens.h"
+#include "mandelbrot.h";
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
