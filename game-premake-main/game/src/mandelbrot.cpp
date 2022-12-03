@@ -3,6 +3,7 @@
 #include <cmath>
 #include <immintrin.h>
 
+//no longer usable
 void SimpleMandelbrot(ColorTexture& Text, Vector2& Offset, Vector2& FractalTopLeft, Vector2& FractalBottomRight, int MaxIterations)
 {
 	float MandelbrotX;
@@ -36,7 +37,6 @@ void SimpleMandelbrot(ColorTexture& Text, Vector2& Offset, Vector2& FractalTopLe
 	}
 
 }
-
 void OptimisedSimpleMandelbrot(ColorTexture& Text, Vector2& Offset, Vector2& FractalTopLeft, Vector2& FractalBottomRight, int MaxIterations)
 {
 	float MandelbrotX;
@@ -75,6 +75,7 @@ void OptimisedSimpleMandelbrot(ColorTexture& Text, Vector2& Offset, Vector2& Fra
 	}
 }
 
+//Usable
 void OptimisedMandelbrotThreadable(const ColorTexture& Text, const Vector2 TileOffset, const Vector2 TileSize, const DVector2 Offset, const double Zoom, const int MaxIterations)
 {
 	float MandelbrotX;

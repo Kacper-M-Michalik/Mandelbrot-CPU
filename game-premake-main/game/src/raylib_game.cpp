@@ -9,7 +9,6 @@
 //----------------------------------------------------------------------------------
 GameScreen currentScreen = GAMEPLAY;
 Font font = { 0 };
-Music music = { 0 };
 
 static void UpdateDrawFrame(void);
 
@@ -18,14 +17,9 @@ int main(void)
     // Initialization
     //---------------------------------------------------------
     InitWindow(screenWidth, screenHeight, "Mandelbrot Window");
-    InitAudioDevice();      // Initialize audio device
 
     // Load global data (assets that must be available in all screens, i.e. font)
     font = LoadFont("resources/mecha.png");
-    music = LoadMusicStream("resources/ambient.ogg");
-
-    SetMusicVolume(music, 1.0f);
-    //PlayMusicStream(music);
 
     // Setup and init first screen
     currentScreen = GAMEPLAY;
@@ -47,7 +41,6 @@ int main(void)
     }
 
     UnloadFont(font);
-    UnloadMusicStream(music);
 
     CloseAudioDevice(); 
 
@@ -60,14 +53,8 @@ int main(void)
 // Update and draw game frame
 static void UpdateDrawFrame(void)
 {
-    // Update
-    //----------------------------------------------------------------------------------
-    UpdateMusicStream(music);       // NOTE: Music keeps playing between screens
-
     UpdateGameplayScreen();
 
-    // Draw
-    //----------------------------------------------------------------------------------
     BeginDrawing();
 
         ClearBackground(RAYWHITE);
@@ -78,8 +65,5 @@ static void UpdateDrawFrame(void)
             default: break;
         }
 
-        //DrawFPS(10, 10);
-
     EndDrawing();
-    //----------------------------------------------------------------------------------
 }

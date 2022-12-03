@@ -7,7 +7,6 @@ const int screenWidth = 800;
 const int screenHeight = 450;
 extern GameScreen currentScreen;
 extern Font font;
-extern Music music; 
 
 extern "C" {
 

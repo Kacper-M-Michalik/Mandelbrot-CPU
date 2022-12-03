@@ -16,11 +16,9 @@ static Texture2D Texture;
 
 static ColorTexture ResultTexture;
 
+void DrawInfo(int Input, int X, int Y);
 void DrawInfo(float Input, int X, int Y);
-void DrawInfo(std::chrono::duration<double>& Input, int X, int Y);
 void DrawInfo(double Input, int X, int Y);
-void ScreenToWorld(const Vector2& n, Vector2& v);
-void WorldToScreen(const Vector2& v, Vector2& n);
 
 // Gameplay Screen Initialization logic
 void InitGameplayScreen(void)
@@ -49,21 +47,12 @@ void InitGameplayScreen(void)
 void UpdateGameplayScreen(void)
 {
     Vector2 D = GetMouseDelta();
-    // Press enter or tap to change to ENDING screen
-    if (IsMouseButtonPressed(0))
-    {
-        //StartPan = GetMousePosition();
-    }
 
     if (IsMouseButtonDown(0))
     {
         Offset.x -= Zoom * (double)D.x / screenWidth;
         Offset.y -= Zoom * (double)D.y / screenHeight;
     }
-
-  
-   // Vector2 MouseBeforeZoom;
-   // ScreenToWorld(M, MouseBeforeZoom);
 
     float Scroll = GetMouseWheelMove();
     if (Scroll < -0.2f)
@@ -88,28 +77,16 @@ void UpdateGameplayScreen(void)
 // Gameplay Screen Draw logic
 void DrawGameplayScreen(void)
 {
-    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), WHITE);
-
     double Start = GetTime();
 
     std::vector<std::thread> Threads;
-    //TileSize.x = screenWidth;
-    //TileSize.y = screenHeight;
+
     int XTiles = 0;
     int YTiles = 0;
 
     int DrawScreenWidth = screenWidth;
     int DrawScreenHeight = screenHeight;
 
-    Vector2 Zero;
-    Zero.x = 0;
-    Zero.y = 0;
-    Vector2 One;
-    One.x = 4;
-    One.y = 1;
-    //OptimisedMandelbrotThreadable(ResultTexture, Zero, One, Offset, Zoom, Iterations);
-
-    //OptimisedSimpleMandelbrot(Result, Offset, FractalTopLeft, FractalBottomRight, 64);   
     for (int x = 0; x < DrawScreenWidth; x += TileSize.x)
     {
         XTiles++;
@@ -161,9 +138,19 @@ void UnloadGameplayScreen(void)
     // TODO: Unload GAMEPLAY screen variables here!
 }
 
+void DrawInfo(int Input, int X, int Y)
+{
+    std::string str = std::to_string(Input);
+    char* Arr = new char[str.length() + 1];
+    strcpy(Arr, str.c_str());
+
+    DrawText(Arr, X, Y, 20, BLACK);
+    delete[] Arr;
+}
+
 void DrawInfo(float Input, int X, int Y)
 {
-    std::string str = std::to_string(Input) + 's';
+    std::string str = std::to_string(Input);
     char* Arr = new char[str.length() + 1];
     strcpy(Arr, str.c_str());
 
@@ -173,17 +160,7 @@ void DrawInfo(float Input, int X, int Y)
 
 void DrawInfo(double Input, int X, int Y)
 {
-    std::string str = std::to_string(Input) + 's';
-    char* Arr = new char[str.length() + 1];
-    strcpy(Arr, str.c_str());
-
-    DrawText(Arr, X, Y, 20, BLACK);
-    delete[] Arr;
-}
-
-void DrawInfo(std::chrono::duration<double>& Input, int X, int Y)
-{
-    std::string str = std::to_string(Input.count()) + 's';
+    std::string str = std::to_string(Input);
     char* Arr = new char[str.length() + 1];
     strcpy(Arr, str.c_str());
 
