@@ -111,7 +111,7 @@ void DrawGameplayScreen(void)
             }
 
             //Threads.push_back(std::thread(OptimisedMandelbrotThreadable, ResultTexture, TileOffset, ActualTileSize, Offset, Zoom, Iterations));
-            Threads.push_back(std::thread(OptimisedSIMDMandelbrotThreadable, ResultTexture, TileOffset, ActualTileSize, Offset, Zoom, Iterations));
+            Threads.push_back(std::thread(OptimisedSIMDMandelbrot, ResultTexture, TileOffset, ActualTileSize, Offset, Zoom, Iterations));
         }
     }
 

@@ -3,18 +3,17 @@
 #include <cmath>
 #include <immintrin.h>
 
-//no longer usable
-void SimpleMandelbrot(ColorTexture& Text, Vector2& Offset, Vector2& FractalTopLeft, Vector2& FractalBottomRight, int MaxIterations)
+void SimpleMandelbrot(ColorTexture& Text, const Vector2 TileOffset, const Vector2 TileSize, const DVector2 Offset, const double Zoom, const int MaxIterations)
 {
-	float MandelbrotX;
-	float MandelbrotY;
-	
-	for (int PY = 0; PY < Text.Height; PY++)
+	int MaxPixelX = (int)TileOffset.x + (int)TileSize.x;
+	int MaxPixelY = (int)TileOffset.y + (int)TileSize.y;
+
+	for (int PY = (int)TileOffset.y; PY < MaxPixelY; PY++)
 	{
-		for (int PX = 0; PX < Text.Width; PX++)
+		for (int PX = (int)TileOffset.x; PX < MaxPixelX; PX++)
 		{
-			float ScaledX = (Offset.x + (float)PX / (float)Text.Width);
-			float ScaledY = (Offset.y + (float)PY / (float)Text.Height);
+			float ScaledX = Offset.x + ((float)PX / (float)Text.Width) * Zoom;
+			float ScaledY = Offset.y + ((float)PY / (float)Text.Height) * Zoom;
 
 			float x = 0;
 			float y = 0;
@@ -37,46 +36,8 @@ void SimpleMandelbrot(ColorTexture& Text, Vector2& Offset, Vector2& FractalTopLe
 	}
 
 }
-void OptimisedSimpleMandelbrot(ColorTexture& Text, Vector2& Offset, Vector2& FractalTopLeft, Vector2& FractalBottomRight, int MaxIterations)
-{
-	float MandelbrotX;
-	float MandelbrotY;
 
-	for (int PY = 0; PY < Text.Height; PY++)
-	{
-		for (int PX = 0; PX < Text.Width; PX++)
-		{
-			float ScaledX = Offset.x + ((float)PX / (float)Text.Width) * FractalTopLeft.x;
-			float ScaledY = Offset.y + ((float)PY / (float)Text.Height)* FractalTopLeft.x;
-
-			float x = 0;
-			float y = 0;
-			float x2 = 0;
-			float y2 = 0;
-
-			int Iteration = 0;
-
-			while (x2 + y2 < 4.f && Iteration < MaxIterations)
-			{
-				y = 2 * x * y + ScaledY;
-				x = x2 - y2 + ScaledX;
-				x2 = x * x;
-				y2 = y * y;
-				Iteration++;
-			};
-
-			float a = 0.1f;
-
-			(*(Text.ColorArray + Text.Width * PY + PX)).r = unsigned char((0.5f * sin(a * Iteration) + 0.5f) * 255);
-			(*(Text.ColorArray + Text.Width * PY + PX)).g = unsigned char((0.5f * sin(a * Iteration + 2.094f) + 0.5f) * 255);
-			(*(Text.ColorArray + Text.Width * PY + PX)).b = unsigned char((0.5f * sin(a * Iteration + 4.188f) * 255));
-			(*(Text.ColorArray + Text.Width * PY + PX)).a = 255;
-		}
-	}
-}
-
-//Usable
-void OptimisedMandelbrotThreadable(const ColorTexture& Text, const Vector2 TileOffset, const Vector2 TileSize, const DVector2 Offset, const double Zoom, const int MaxIterations)
+void OptimisedMandelbrot(const ColorTexture& Text, const Vector2 TileOffset, const Vector2 TileSize, const DVector2 Offset, const double Zoom, const int MaxIterations)
 {
 	float MandelbrotX;
 	float MandelbrotY;
@@ -117,7 +78,7 @@ void OptimisedMandelbrotThreadable(const ColorTexture& Text, const Vector2 TileO
 	}
 }
 
-void OptimisedSIMDMandelbrotThreadable(const ColorTexture& Text, const Vector2 TileOffset, const Vector2 TileSize, const DVector2 Offset, const double Zoom, const int MaxIterations)
+void OptimisedSIMDMandelbrot(const ColorTexture& Text, const Vector2 TileOffset, const Vector2 TileSize, const DVector2 Offset, const double Zoom, const int MaxIterations)
 {
 	float MandelbrotX;
 	float MandelbrotY;
