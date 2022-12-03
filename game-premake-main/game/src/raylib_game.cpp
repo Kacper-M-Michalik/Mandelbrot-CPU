@@ -25,7 +25,7 @@ int main(void)
     music = LoadMusicStream("resources/ambient.ogg");
 
     SetMusicVolume(music, 1.0f);
-    PlayMusicStream(music);
+    //PlayMusicStream(music);
 
     // Setup and init first screen
     currentScreen = GAMEPLAY;
