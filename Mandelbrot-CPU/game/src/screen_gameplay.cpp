@@ -6,6 +6,7 @@
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <math.h>
 
 static DVector2 Offset;
 static double Zoom;
@@ -15,6 +16,8 @@ static Vector2 TileSize;
 static Texture2D Texture;
 
 static ColorTexture ResultTexture;
+
+static std::vector<std::thread> Threads;
 
 void DrawInfo(int Input, int X, int Y);
 void DrawInfo(float Input, int X, int Y);
@@ -39,8 +42,11 @@ void InitGameplayScreen(void)
     Offset.y = 0;
     Zoom = 1;
 
-    TileSize.x = 100;
-    TileSize.y = 100;     
+    unsigned int ProcessorCount = std::thread::hardware_concurrency();
+
+    TileSize.x = screenWidth;
+    TileSize.y = (int)ceil((float)screenHeight / (float)ProcessorCount);
+
 }
 
 // Gameplay Screen Update logic
@@ -79,20 +85,18 @@ void DrawGameplayScreen(void)
 {
     double Start = GetTime();
 
-    std::vector<std::thread> Threads;
-
-    int XTiles = 0;
-    int YTiles = 0;
+    Threads.clear();
 
     int DrawScreenWidth = screenWidth;
     int DrawScreenHeight = screenHeight;
 
+    int XTiles = ceil((float)DrawScreenWidth / (float)TileSize.x);
+    int YTiles = ceil((float)DrawScreenHeight / (float)TileSize.y);
+
     for (int x = 0; x < DrawScreenWidth; x += TileSize.x)
     {
-        XTiles++;
         for (int y = 0; y < DrawScreenHeight; y += TileSize.y)
         {
-            YTiles++;
             Vector2 ActualTileSize;
             ActualTileSize.x = TileSize.x;
             ActualTileSize.y = TileSize.y;
@@ -110,12 +114,9 @@ void DrawGameplayScreen(void)
                 ActualTileSize.y = DrawScreenHeight % (int)TileSize.y;
             }
 
-            //Threads.push_back(std::thread(OptimisedMandelbrotThreadable, ResultTexture, TileOffset, ActualTileSize, Offset, Zoom, Iterations));
             Threads.push_back(std::thread(OptimisedSIMDMandelbrot, ResultTexture, TileOffset, ActualTileSize, Offset, Zoom, Iterations));
         }
     }
-
-    YTiles = YTiles / XTiles;
 
     for (int i = 0; i < Threads.size(); i++) 
     {
